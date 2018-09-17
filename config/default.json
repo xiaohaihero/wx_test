@@ -1,12 +1,12 @@
 {
   "http_info":{
     "host":"127.0.0.1",
-    "port":"3001"
+    "port":"8001"
   },
   "weixin_info":{
     "token":"sg92322",
     "appID": "wx3df629936bf31f75",
     "appSecret":"036989030fec913af6365b7695ffa918"
   },
-  "log_dir":"C:/Users/wuxh/project_logs"
+  "log_dir":"/home/seven/project_logs"
 }
