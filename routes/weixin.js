@@ -1,7 +1,7 @@
 let router = require('koa-router')();
 let getRweBody = require('raw-body')
 import { msg_auth,get_wx_token } from '../lib/weixin'
-import { post_format_xml, xml_obj } from '../lib/utils'
+import { post_format_xml, xml_obj, formatMessage, wx_oprate_by_type } from '../lib/utils'
 
 router.prefix('/wx');
 
@@ -14,20 +14,21 @@ router.get('/msg', async (ctx, next) => {
 
 /**
 * 
-* 
+* 获取微信服务器转发的消息
 */
 router.post('/msg', async (ctx, next) => {
   let params = ctx.query;
   let auth_res = msg_auth(params);
   if(auth_res == params.echostr){
     let xml = await post_format_xml(ctx);
-    let obj = await xml_obj(xml);
-    console.info(obj);
+    let wx_obj = await xml_obj(xml);
+    let obj_info = formatMessage(wx_obj);
     let result = await get_wx_token();
     console.info(result);
-    ctx.body = 'success'
+    let return_xml = wx_oprate_by_type(obj_info);
+    ctx.body = return_xml
   }else{
-    ctx.body = ''
+    ctx.body = 'sb 滚啊'
   }
 })
 
