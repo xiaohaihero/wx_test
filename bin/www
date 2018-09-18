@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('demo:server');
 var http = require('http');
 let config = require('config');
+import { create_btn } from '../lib/weixin.js'
 
 /**
  * Get port from environment and store in Express.
@@ -123,3 +124,6 @@ var initLogPath = function(){
 }
 
 initLogPath();
+
+//项目启动时去创建微信按钮
+create_btn();
