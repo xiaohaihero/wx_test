@@ -1,7 +1,7 @@
 let router = require('koa-router')();
 let getRweBody = require('raw-body')
-import { msg_auth,get_wx_token } from '../lib/weixin'
-import { post_format_xml, xml_obj, formatMessage, wx_oprate_by_type } from '../lib/utils'
+import { msg_auth,get_wx_token, wx_oprate_by_type } from '../lib/weixin'
+import { post_format_xml, xml_obj, formatMessage } from '../lib/utils'
 
 router.prefix('/wx');
 
@@ -22,10 +22,10 @@ router.post('/msg', async (ctx, next) => {
   if(auth_res == params.echostr){
     let xml = await post_format_xml(ctx);
     let wx_obj = await xml_obj(xml);
-    let obj_info = formatMessage(wx_obj);
+    let obj_info = formatMessage(wx_obj.xml);
     let result = await get_wx_token();
-    console.info(result);
     let return_xml = wx_oprate_by_type(obj_info);
+    console.info(return_xml);
     ctx.body = return_xml
   }else{
     ctx.body = 'sb 滚啊'
