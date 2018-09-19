@@ -23,9 +23,9 @@ router.post('/msg', async (ctx, next) => {
     let xml = await post_format_xml(ctx);
     let wx_obj = await xml_obj(xml);
     let obj_info = formatMessage(wx_obj.xml);
+    console.info(obj_info);
     let result = await get_wx_token();
     let return_xml = wx_oprate_by_type(obj_info);
-    console.info(return_xml);
     ctx.body = return_xml
   }else{
     ctx.body = 'sb 滚啊'

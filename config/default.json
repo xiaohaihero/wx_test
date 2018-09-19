@@ -7,7 +7,7 @@
     "token":"sg92322",
     "appID": "wx3df629936bf31f75",
     "appSecret":"036989030fec913af6365b7695ffa918",
-    "btn_json_path":"../lib/button.json"           
+    "btn_json_path":"/../config/button.json"           
   },
   "log_dir":"/home/seven/project_logs"
 }
