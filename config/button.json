@@ -11,7 +11,7 @@
            {    
                "type":"view",
                "name":"搜索",
-               "url":"${url}"
+               "url":"__url__"
             },
             {
                "type":"click",

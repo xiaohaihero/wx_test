@@ -1,6 +1,6 @@
 let router = require('koa-router')();
 let getRweBody = require('raw-body')
-import { msg_auth,get_wx_token, wx_oprate_by_type } from '../lib/weixin'
+import { msg_auth,get_wx_token, wx_oprate_by_type, get_wx_user_token, get_wx_user_info } from '../lib/weixin'
 import { post_format_xml, xml_obj, formatMessage } from '../lib/utils'
 
 router.prefix('/wx');
@@ -38,6 +38,13 @@ router.post('/msg', async (ctx, next) => {
 router.get('/he_live', async (ctx, next) => {
   let params = ctx.query;
   console.info(params);
+  let userTokenInfo = await get_wx_user_token(params.code);
+  console.info(userTokenInfo);
+  let userInfo = await get_wx_user_info(userTokenInfo, params.state);
+  ctx.status = 301;
+  ctx.body = 'Redirecting to shopping cart';
+  ctx.redirect('http://tsml520.cn:5000/');
+
   ctx.body = "success";
 });
 
