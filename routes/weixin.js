@@ -32,5 +32,15 @@ router.post('/msg', async (ctx, next) => {
   }
 })
 
+/**
+ * 用户跳转地址
+ */
+router.get('/he_live', async (ctx, next) => {
+  let params = ctx.query;
+  console.info(params);
+  ctx.body = "success";
+});
+
+
 
 module.exports = router
