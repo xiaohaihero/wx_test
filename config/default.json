@@ -9,5 +9,12 @@
     "appSecret":"036989030fec913af6365b7695ffa918",
     "btn_json_path":"/../config/button.json"           
   },
+  "he_info":{
+    "userName":"anonymous",
+    "pwd":"andLive_visitor",
+    "activityId":"cdbi18kwwpbwj3skauxs7i71bwl2653h",
+    "default_nonce":"4a568c428a037e2f849526a7dc65ef25",
+    "key":"000000000000000"
+  },
   "log_dir":"/home/seven/project_logs"
 }
