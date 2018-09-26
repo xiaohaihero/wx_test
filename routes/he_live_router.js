@@ -1,7 +1,6 @@
 const router = require('koa-router')();
 let logUtil = require('../lib/log_utils');
 let he_api = require('../lib/he_api');
-let test_api = require('../lib/api');
 const config = require('config')
 
 router.prefix('/he_live')
@@ -26,7 +25,7 @@ let request_obj = {
 
 //获取活动列表
 router.get('/getActivityList', async (ctx, next) => {
-  let api = new test_api(config.he_info.userName, config.he_info.pwd, config.he_info.activityId);
+  let api = new he_api(config.he_info.userName, config.he_info.pwd, config.he_info.activityId);
   let bodyObj = api.getBodyObj();
   bodyObj.MsgBody.loginName = config.he_info.userName;
   bodyObj.MsgBody.type = '2';
