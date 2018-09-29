@@ -6,7 +6,9 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
-const test = require('./routes/test')
+//log工具
+const logUtil = require('./lib/log_utils');
+
 const weixin = require('./routes/weixin')
 const heLiveRouter = require('./routes/he_live_router');
 
@@ -54,7 +56,6 @@ app.use(async (ctx, next) => {
 });
 
 // routes
-app.use(test.routes(), test.allowedMethods())
 app.use(weixin.routes(), weixin.allowedMethods())
 app.use(heLiveRouter.routes(), heLiveRouter.allowedMethods());
 
