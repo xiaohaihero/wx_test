@@ -10,7 +10,32 @@ router.prifix('/wx_web');
 /**
  * 获取jsapi_ticket
  */
-router.get('/get_jsapi_ticket', async (cxt, next) => {
+// router.get('/get_jsapi_ticket', async (cxt, next) => {
+//   //获取access_token
+//   let access_token_info = await get_wx_user_token();
+//   if(!access_token_info.success){
+//     return ctx.body = {
+//       ret:Error.REQUEST_ACCESS_TOKEN_ERROR,
+//       msg:access_token_info.message
+//     }
+//   }
+//   let jsapi_ticket = await get_jsapi_ticket();
+//   if(!jsapi_ticket){
+//     return ctx.body = {
+//       ret:Error.REQUEST_JSAPI_TICKET_ERROR,
+//       msg:'请求获取jsapi_ticket失败'
+//     }
+//   }
+//   ctx.body = {
+//     ret:Error.SUCCESS,
+//     data:jsapi_ticket
+//   }
+// });
+
+/**
+ * 获取加密signature
+ */
+router.post('/get_signature', async (ctx, next) => {
   //获取access_token
   let access_token_info = await get_wx_user_token();
   if(!access_token_info.success){
@@ -24,23 +49,6 @@ router.get('/get_jsapi_ticket', async (cxt, next) => {
     return ctx.body = {
       ret:Error.REQUEST_JSAPI_TICKET_ERROR,
       msg:'请求获取jsapi_ticket失败'
-    }
-  }
-  ctx.body = {
-    ret:Error.SUCCESS,
-    data:jsapi_ticket
-  }
-});
-
-/**
- * 获取加密signature
- */
-router.post('/get_signature', async (ctx, next) => {
-  let jsapi_ticket = ctx.request.body.jsapi_ticket;
-  if(!jsapi_ticket){
-    return ctx.body = {
-      ret:Error.LACK_OF_PARAMS,
-      msg:`参数jsapi_ticket缺失`
     }
   }
   let url = ctx.request.url;
