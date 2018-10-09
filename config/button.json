@@ -11,7 +11,7 @@
            {    
                "type":"view",
                "name":"搜索",
-               "url":"http://tsml520.cn:5000"
+               "url":"http://tsml520.cn/index.html"
             },
             {
                "type":"click",

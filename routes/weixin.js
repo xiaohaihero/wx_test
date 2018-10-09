@@ -37,15 +37,15 @@ router.post('/msg', async (ctx, next) => {
  */
 router.get('/he_live', async (ctx, next) => {
   console.info("进入用户鉴权方法.........................");
-  let params = ctx.query;
-  console.info(params);
+  //let params = ctx.query;
+  //console.info(params);
   //let userTokenInfo = await get_wx_user_token(params.code);
   //console.info(userTokenInfo);
   //let userInfo = await get_wx_user_info(userTokenInfo.access_token, userTokenInfo.openid);
   //userInfo = (new Buffer(JSON.stringify(userInfo))).toString('base64');
-  //ctx.status = 302;
-  //ctx.body = userInfo;
-  //ctx.redirect(`http://tsml520.cn:5000?code=success&userInfo=${userInfo}`);
+  ctx.status = 302;
+  ctx.response.body = 'userinfo';
+  ctx.response.redirect(`http://tsml520.cn:5000?code=success`);
 });
 
 /**
