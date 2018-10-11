@@ -20,7 +20,7 @@ router.post('/getActivityList', async (ctx, next) => {
   }
   let bodyObj = api.getBodyObj();
   bodyObj.MsgBody.loginName = config.he_info.userName;
-  bodyObj.MsgBody.type = '2';
+  bodyObj.MsgBody.type = '1';
   bodyObj.MsgBody.contentId = start_num;
   bodyObj.MsgBody.loadSize = rows;
   //bodyObj.MsgBody.contentId = '0';
