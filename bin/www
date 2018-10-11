@@ -9,7 +9,7 @@ var debug = require('debug')('demo:server');
 var http = require('http');
 let config = require('config');
 import { create_btn } from '../lib/weixin.js'
-
+import { create_io_server } from '../socket_io'
 /**
  * Get port from environment and store in Express.
  */
@@ -30,6 +30,8 @@ var server = http.createServer(app.callback());
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+create_io_server(server);
+
 
 /**
  * Normalize a port into a number, string, or false.
