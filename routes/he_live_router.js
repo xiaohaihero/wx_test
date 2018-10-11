@@ -82,6 +82,96 @@ router.post('/getActivityPlayUrl',async (ctx, next) => {
   } 
 });
 
+//获取实景分组结构信息
+router.post('/getSceneGroupList', async (ctx, next) => {
+  let start_num = ctx.request.body.start_num;
+  if(!start_num){
+    start_num = '1';
+  } 
+  let rows = ctx.request.body.rows;
+  if(!rows){
+    rows = '10';
+  }
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.contentId = start_num;
+  bodyObj.MsgBody.loadSize = rows;
+  console.info(bodyObj);
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getSceneGroupList');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
+})
+
+//获取实景资源列表接口
+router.post('/getSceneList', async (ctx, next) => {
+  let start_num = ctx.request.body.start_num;
+  if(!start_num){
+    start_num = '1';
+  } 
+  let rows = ctx.request.body.rows;
+  if(!rows){
+    rows = '10';
+  }
+  let groupId = ctx.request.body.groupId;
+  if(!groupId){
+    return ctx.body = {
+      ret:Error.LACK_OF_PARAMS,
+      msg:'参数groupId缺失'
+    }
+  }
+  let type = ctx.request.body.type;
+  if(!type){
+    type = '1';      //1:实景   2.实景热门置顶资源
+  }
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.contentId = start_num;
+  bodyObj.MsgBody.loadSize = rows;
+  bodyObj.MsgBody.groupId = groupId;
+  bodyObj.MsgBody.type = type;
+  console.info(bodyObj);
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getSceneList');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
+})
+
+//获取实景资源播放URL
+router.post('/getScenePlayUrl',async (ctx, next) => {
+  let resourceId = ctx.request.body.resourceId;
+  if(!resourceId){                                                                                     
+   return ctx.body = {                                                                                
+     ret:Error.LACK_OF_PARAMS,                                                                        
+     msg:'参数resourceId缺失'                                                                         
+   }                                                                                                  
+  } 
+  let urlType = ctx.request.body.urlType;
+  if(!urlType){
+    urlType = '0';                    // 0:HLS 1:RTSP 2:RTMP
+  }
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.resourceId = resourceId; 
+  bodyObj.MsgBody.urlType = urlType;
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getScenePlayUrl');
+  result = JSON.parse(result);
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  } 
+});
+
+
+
 //测试
 router.get('/test', async (ctx, next) => {
   request_obj.MsgBody.contentId = ''
