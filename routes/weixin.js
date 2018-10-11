@@ -5,6 +5,11 @@ import { post_format_xml, xml_obj, formatMessage } from '../lib/utils'
 
 router.prefix('/wx');
 
+//设置网页授权安全域名
+router.get('/MP_verify_akEHrCCGtXbldOXh.txt', async (ctx, next) =>{
+  ctx.body = 'akEHrCCGtXbldOXh'
+});
+
 //获取微信消息
 router.get('/msg', async (ctx, next) => {
   let params = ctx.query;
@@ -43,9 +48,9 @@ router.get('/he_live', async (ctx, next) => {
   //console.info(userTokenInfo);
   //let userInfo = await get_wx_user_info(userTokenInfo.access_token, userTokenInfo.openid);
   //userInfo = (new Buffer(JSON.stringify(userInfo))).toString('base64');
-  ctx.status = 302;
-  ctx.response.body = 'userinfo';
-  ctx.response.redirect(`http://tsml520.cn:5000?code=success`);
+  //ctx.status = 302;
+  //ctx.response.body = 'userinfo';
+  //ctx.response.redirect(`http://tsml520.cn:5000?code=success`);
 });
 
 /**

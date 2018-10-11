@@ -12,6 +12,7 @@ const logUtil = require('./lib/log_utils');
 
 const weixin = require('./routes/weixin')
 const heLiveRouter = require('./routes/he_live_router');
+const weixinWeb = require('./routes/weixin_web');
 
 // error handler
 onerror(app)
@@ -76,5 +77,13 @@ app.use(async (ctx, next) => {
 // routes
 app.use(weixin.routes(), weixin.allowedMethods())
 app.use(heLiveRouter.routes(), heLiveRouter.allowedMethods());
+app.use(weixinWeb.routes(), weixinWeb.allowedMethods());
+app.use(async (ctx, next) => {
+  if(ctx.request.path == '/MP_verify_akEHrCCGtXbldOXh.txt'){
+    ctx.body = 'akEHrCCGtXbldOXh'
+  }else{
+    await next();
+  }
+});
 
 module.exports = app
