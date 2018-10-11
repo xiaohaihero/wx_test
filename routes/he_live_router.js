@@ -20,7 +20,11 @@ router.post('/getActivityList', async (ctx, next) => {
   }
   let bodyObj = api.getBodyObj();
   bodyObj.MsgBody.loginName = config.he_info.userName;
-  bodyObj.MsgBody.type = '1';
+  let type = cta.request.body.type;
+  if(!type){
+    type = '1';
+  }
+  bodyObj.MsgBody.type = type;
   bodyObj.MsgBody.contentId = start_num;
   bodyObj.MsgBody.loadSize = rows;
   //bodyObj.MsgBody.contentId = '0';
@@ -174,39 +178,102 @@ router.post('/getScenePlayUrl',async (ctx, next) => {
 
 //测试
 router.get('/test', async (ctx, next) => {
-  request_obj.MsgBody.contentId = ''
-  request_obj.MsgBody.loadSize = '0'
-  request_obj.MsgBody.type = 2
-  let api = new he_api();
-  let result = await new Promise((resolve, reject) => {
-    api.sendMsgToBpc(api.userInfo.userName, api.userInfo.pwd, 'http://access.hezhibo.com:8008/bpc/api/app/getActivityList',api.userInfo.activityId, JSON.stringify(request_obj), function (err, data, body){
-      if(err){
-        resolve({
-          ret:'error',
-          err:err
-        });
-      }
-      resolve(body)
-    })
-  });
-  ctx.body = result
+  
+  ctx.body = ''
 })
 
 //获取评论列表
 router.post('/getCommentList', async (ctx, next) => {
-  request_obj.MsgBody.userId = '00000000000000000000000000000000';
-  let api = new he_api(config.he_info.userName, config.he_info.pwd, config.he_info.activityId);
-  api.sendMsgToBpc(api.userInfo.userName, api.userInfo.pwd, 'http://access.hezhibo.com:8008/bpc/api/app/getCommentList',api.userInfo.activityId, JSON.stringify(request_obj), function (err, data, body){
-    if(err){
-      ctx.body = {
-        ret:'error',
-        err:err
-      }  
-      console.info(error);
-    }
-    ctx.body = {body}
-    console.info(body);
-  })
+  let start_num = ctx.request.body.start_num;
+  if(!start_num){
+    start_num = '1';
+  } 
+  let rows = ctx.request.body.rows;
+  if(!rows){
+    rows = '10';
+  }
+  let resourceId = ctx.request.body.resourceId;
+  if(!resourceId){                                                                                     
+   return ctx.body = {                                                                                
+     ret:Error.LACK_OF_PARAMS,                                                                        
+     msg:'参数resourceId缺失'                                                                         
+   }                                                                                                  
+  } 
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.contentId = start_num;
+  bodyObj.MsgBody.loadSize = rows;
+  bodyObj.MsgBody.resourceId = resourceId;
+  console.info(bodyObj);
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getCommentList');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
+})
+
+//发表评论
+router.post('/addComment', async (ctx, next) => {
+  let resourceId = ctx.request.body.resourceId;
+  if(!resourceId){                                                                                     
+   return ctx.body = {                                                                                
+     ret:Error.LACK_OF_PARAMS,                                                                        
+     msg:'参数resourceId缺失'                                                                         
+   }                                                                                                  
+  } 
+  let content = ctx.request.body.content;
+  if(!content){
+    return ctx.body = {                                                                                
+      ret:Error.LACK_OF_PARAMS,                                                                        
+      msg:'参数content缺失'                                                                         
+    } 
+  }
+  let userInfo = ctx.request.body.userInfo;
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.resourceId = resourceId;
+  bodyObj.MsgBody.content = content;
+  bodyObj.MsgBody.userInfo = userInfo;
+  console.info(bodyObj);
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/addComment');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
+})
+
+//发表点赞
+router.post('/addPraise', async (ctx, next) => {
+  let contentId = ctx.request.body.contentId;
+  if(!contentId){                                                                                     
+   return ctx.body = {                                                                                
+     ret:Error.LACK_OF_PARAMS,                                                                        
+     msg:'参数contentId缺失'                                                                         
+   }                                                                                                  
+  } 
+  let praiseCount = ctx.request.body.praiseCount;
+  if(!praiseCount){
+    praiseCount = '1';
+  }
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.contentId = contentId;
+  bodyObj.MsgBody.praiseCount = praiseCount;
+  console.info(bodyObj);
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/addPraise');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
 })
 
 
