@@ -53,9 +53,8 @@ router.get('/he_live', async (ctx, next) => {
   console.info(userTokenInfo);
   let userInfo = await get_wx_user_info(userTokenInfo.access_token, userTokenInfo.openid);
   //userInfo = (new Buffer(JSON.stringify(userInfo))).toString('base64');
-  //ctx.status = 302;
-  //ctx.response.body = 'userinfo';
-  //ctx.response.redirect(`http://tsml520.cn:5000?code=success`);
+  ctx.status = 302;
+  ctx.response.redirect(`http://tsml520.cn:5000?openid=${userTokenInfo.openid}`);
   ctx.body = userInfo;
   httpPost2(config.http_info.host, config.http_info.port, '/he_live/addWxUser',{
     code:params.code,
