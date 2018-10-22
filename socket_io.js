@@ -4,8 +4,10 @@ async function create_io_server(server){
     io.close()
   }
   io = require('socket.io')(server);
-  io.on('connection', (clien) => {
-    clien.on('msg', (data) => {
+  io.on('connection', (client) => {
+    console.info(client.handshake.query);
+    client.emit('send',{'msg':'hehe'});
+    client.on('msg', (data) => {
       console.info(data);
     });
   });

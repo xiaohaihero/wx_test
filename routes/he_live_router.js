@@ -20,7 +20,7 @@ router.post('/getActivityList', async (ctx, next) => {
   }
   let bodyObj = api.getBodyObj();
   bodyObj.MsgBody.loginName = config.he_info.userName;
-  let type = cta.request.body.type;
+  let type = ctx.request.body.type;
   if(!type){
     type = '1';
   }
@@ -111,6 +111,30 @@ router.post('/getSceneGroupList', async (ctx, next) => {
   }
 })
 
+//获取实景分组结构信息
+router.post('/getSceneGroupListWith2', async (ctx, next) => {
+  let start_num = ctx.request.body.start_num;
+  if(!start_num){
+    start_num = '1';
+  } 
+  let rows = ctx.request.body.rows;
+  if(!rows){
+    rows = '10';
+  }
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.contentId = start_num;
+  bodyObj.MsgBody.loadSize = rows;
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getSceneGroupListWith2');
+  if(typeof(result) == 'string'){
+    result = JSON.parse(result);
+  }
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  }
+})
+
 //获取实景资源列表接口
 router.post('/getSceneList', async (ctx, next) => {
   let start_num = ctx.request.body.start_num;
@@ -122,12 +146,6 @@ router.post('/getSceneList', async (ctx, next) => {
     rows = '10';
   }
   let groupId = ctx.request.body.groupId;
-  if(!groupId){
-    return ctx.body = {
-      ret:Error.LACK_OF_PARAMS,
-      msg:'参数groupId缺失'
-    }
-  }
   let type = ctx.request.body.type;
   if(!type){
     type = '1';      //1:实景   2.实景热门置顶资源
@@ -136,7 +154,9 @@ router.post('/getSceneList', async (ctx, next) => {
   bodyObj.MsgBody.loginName = config.he_info.userName;
   bodyObj.MsgBody.contentId = start_num;
   bodyObj.MsgBody.loadSize = rows;
-  bodyObj.MsgBody.groupId = groupId;
+  if(groupId){
+    bodyObj.MsgBody.groupId = groupId;
+  }
   bodyObj.MsgBody.type = type;
   console.info(bodyObj);
   let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/getSceneList');
@@ -231,12 +251,17 @@ router.post('/addComment', async (ctx, next) => {
       msg:'参数content缺失'                                                                         
     } 
   }
-  let userInfo = ctx.request.body.userInfo;
+  let openId = ctx.request.body.openId;
+  if(!openId){
+    return ctx.body = {
+      ret:Error.LACK_OF_PARAMS,
+      msg:'参数openId缺失'
+    }
+  }
   let bodyObj = api.getBodyObj();
-  bodyObj.MsgBody.loginName = config.he_info.userName;
+  bodyObj.MsgBody.loginName = openId;
   bodyObj.MsgBody.resourceId = resourceId;
   bodyObj.MsgBody.content = content;
-  bodyObj.MsgBody.userInfo = userInfo;
   console.info(bodyObj);
   let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/addComment');
   if(typeof(result) == 'string'){
@@ -276,5 +301,36 @@ router.post('/addPraise', async (ctx, next) => {
   }
 })
 
+//添加微信用户
+router.post('/addWxUser',async (ctx, next) => {
+  let code = ctx.request.body.code;
+  let userInfo = ctx.request.body.userInfo;
+  if(typeof(userInfo) == 'string'){
+    userInfo = JSON.parse(userInfo);
+  }  
+  let bodyObj = api.getBodyObj();
+  bodyObj.MsgBody.phone = userInfo.openid; 
+  bodyObj.MsgBody.appKey = code;
+  bodyObj.MsgBody.passWord = '123456';
+  bodyObj.MsgBody.cusName = userInfo.nickname;
+  bodyObj.MsgBody.nickName = userInfo.nickname;
+  bodyObj.MsgBody.headUrl = userInfo.headimgurl;
+  bodyObj.MsgBody.cusId = userInfo.openid;
+  let address = userInfo.country;
+  if(userInfo.province){
+    address = `${address}·${userInfo.province}`;
+  }
+  if(userInfo.city){
+    address = `${address}·${userInfo.city}`;
+  }
+  bodyObj.MsgBody.departMent = address;
+  bodyObj.MsgBody.loginName = config.he_info.userName;
+  let result = await api.sendMsgToBpc(bodyObj, api.userInfo, config.he_info.default_nonce, 'http://access.hezhibo.com:8008/bpc/api/app/addWxUser');
+  result = JSON.parse(result);
+  ctx.body = {
+    ret:Error.SUCCESS,
+    data:result.MsgBody
+  } 
+});
 
 module.exports = router
