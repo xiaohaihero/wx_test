@@ -252,6 +252,9 @@ router.post('/addComment', async (ctx, next) => {
     } 
   }
   let openId = ctx.request.body.openId;
+  console.info("*******************");
+  console.info(openId, typeof(openId));
+  console.info("*******************");
   if(!openId){
     return ctx.body = {
       ret:Error.LACK_OF_PARAMS,

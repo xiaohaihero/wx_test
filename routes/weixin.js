@@ -53,9 +53,10 @@ router.get('/he_live', async (ctx, next) => {
   console.info(userTokenInfo);
   let userInfo = await get_wx_user_info(userTokenInfo.access_token, userTokenInfo.openid);
   //userInfo = (new Buffer(JSON.stringify(userInfo))).toString('base64');
-  ctx.status = 302;
-  ctx.response.redirect(`http://tsml520.cn:5000?openid=${userTokenInfo.openid}`);
+  //ctx.status = 302;
+  //ctx.response.redirect(`http://tsml520.cn/index.html?openid=${userTokenInfo.openid}`);
   ctx.body = userInfo;
+  console.info(userInfo);
   httpPost2(config.http_info.host, config.http_info.port, '/he_live/addWxUser',{
     code:params.code,
     userInfo:userInfo
@@ -72,6 +73,15 @@ router.get('/get_wx_user_info_by_openid/:openid', async(ctx, next) => {
     return ctx.body = token_result;
   }
   let user_info = await get_wx_user_info_by_openid(token_result.access_token, openid);
+  if(typeof(user_info) == 'string'){
+    user_info = JSON.parse(user_info);
+  }
+  if(user_info.subscribe == 1){
+    httpPost2(config.http_info.host, config.http_info.port, '/he_live/addWxUser',{
+      userInfo:user_info
+    });
+  }
+  console.info(user_info)
   ctx.body = user_info
 });
 
